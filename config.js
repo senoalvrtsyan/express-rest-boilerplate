@@ -1,11 +1,10 @@
 'use strict';
 
-const {
-  PORT,
-  MODE
-} = process.env;
+const { NODE_ENV, PORT } = process.env;
+const nodeEnv = (NODE_ENV !== undefined ? NODE_ENV : 'development');
 
 module.exports = {
-  mode: MODE || 'production',
-  port: parseInt(PORT) || 3000
+  nodeEnv,
+  logLevel: nodeEnv === 'development' ? 'debug' : 'info',
+  port: PORT || 8080
 };

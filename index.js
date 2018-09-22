@@ -8,7 +8,7 @@ const app = require('express')();
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const helmet = require('helmet');
-const winston = require('winston');
+const log = require('./logger');
 const config = require('./config');
 const { api } = require('./routes');
 
@@ -16,15 +16,15 @@ const { api } = require('./routes');
  * Other Middleware
  */
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
 app.use(helmet());
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
-    if (req.headers['access-control-request-headers']) {
+    if (req.headers[ 'access-control-request-headers' ]) {
       res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Headers', req.headers['access-control-request-headers']);
+      res.header('Access-Control-Allow-Headers', req.headers[ 'access-control-request-headers' ]);
       res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
       res.header('Access-Control-Allow-Credentials', 'true');
     }
@@ -55,15 +55,14 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
-  res.json({message: err.message, error: err});
+  res.json({ message: err.message, error: err });
 });
 
 /**
  * Application listening on PORT
  */
 
-app.listen(config.port, winston.log('info', `Node.js server is running at http://localhost:${config.port} 
-    in ${process.env.NODE_ENV} mode with process id ${process.pid}`));
+app.listen(config.port, log.info(`Node.js server is running at http://localhost:${config.port} in ${config.nodeEnv} mode with process id ${process.pid}`));
 
 /**
  * Checking Uncaught Exceptions
